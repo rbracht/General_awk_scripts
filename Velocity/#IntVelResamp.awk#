@@ -1,0 +1,76 @@
+BEGIN{
+	#***************************************************************
+	#***************************************************************
+	#****                                                       ****
+	#**** Program to resample interval velocity data in two way ****
+	#**** time and output the resampled interval velocities     ****
+	#**** and the newly calculated RMS velocities. If the       ****
+	#**** interval of resampling is larger than the interval    ****
+	#**** of the data input then within the sampled interval    ****
+	#**** the time weighted average of the velocities within    ****
+	#**** that interval will be used to represent that block.   ****
+	#**** If the interval of resampling is smaller than the     ****
+	#**** intervals within the input file the interval velocity ****
+	#**** will be kept constant for all resampled intervals     ****
+	#**** within the block.                                     ****
+	#****                                                       ****
+	#**** This program will skip a user specified number of     ****
+	#**** initial lines then use two user chosen columns for    ****
+	#**** time/depth and interval velocity and resample these   ****
+	#**** to user specified increments.                         ****
+	#****                                                       ****
+	#***************************************************************
+	#***************************************************************
+
+
+	#####################################
+	#                                   #
+	#  You might want to change the     #
+	#  following parameters for a       #
+	#  particular run.                  #
+	#                                   #
+	#####################################
+
+	# Number of Initial lines in file to skip
+	InitLineSkip = 7
+
+	# Column number in file  of 2 Way Time
+	Col_Time = 3
+	# Column number in file  of Interval Velocity
+	Col_Velocity = 4
+
+	# New Sample interval (in units of two way time)
+	Samp_Interval = 4.0
+
+	# Maximum time 
+	Max_Time = 6000.00
+
+	# Interval velocity to use for the first or surface layer
+	# If negative or zero defaults to first velocity encountered
+	Top_IntVel = 1500.00
+
+	# 2Way Time units enter: (1) for milliseconds,
+	#                        (2) for seconds
+        TimeUnits = 1
+
+	# Title for Velocity file
+	printf ("# Interval velocity regulerization \n")
+        printf ("# Time sample interval %7.1f\n", Samp_Interval )
+	printf ("# Maximum time %7.1\n", Max_Time )
+	printf ("#\n")
+
+	############################################
+	#                                          #
+	#  Should be able to leave the rest alone  #
+	#                                          #
+	############################################
+	
+	T = 0.0
+	vint = Top_IntVel
+	FirstTimeFlag = 0
+}
+{
+  if ( NR > InitLineSkip ) {
+    
+    if ( FirstTimeFlag == 0 ) {
+      
