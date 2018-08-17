@@ -1,0 +1,38 @@
+# +----------------------------------------------------------------+
+# |                                                                |
+# |  This awk script will take user input parameters: zero         |
+# |  offset twt,interval velocity, rms velocity. The input file    |
+# |  should contain the offsets in consistent units.               |
+# |  The output file will be the same as the input file with       |
+# |  one additional column added with the calculated angle         |
+# |                                                                |
+# +----------------------------------------------------------------+
+
+BEGIN{
+
+  TwoWayTime = 1.240
+  Vrms = 7560.0
+  Vint = 7989
+  OffsetColNum = 1
+  SkipLines = 2
+    pi = atan2(1,1)*4
+
+}
+{
+
+  if ( NR <= SkipLines ) {
+    print $0
+  }
+  else {
+    Off = $OffsetColNum
+    OffSq = Off * Off
+    TwtSq = TwoWayTime * TwoWayTime
+    VintSq = Vint * Vint
+    VrmsSq = Vrms * Vrms
+    SinSq = (OffSq * VintSq)/(VrmsSq*(VrmsSq*TwtSq + OffSq))
+    SinTheta = sqrt(SinSq)
+    Theta = atan2(SinTheta,sqrt(1-SinSq))
+    print $0,"   ",Theta
+  }
+ 
+}
