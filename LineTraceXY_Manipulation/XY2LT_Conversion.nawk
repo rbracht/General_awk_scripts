@@ -1,0 +1,256 @@
+BEGIN{
+	#********************************************************************
+	#********************************************************************
+	#*****                                                          *****
+	#***** This program will calculate the (Line,Trace) of          *****
+	#***** user specified (X,Y) coordinates in a column format.     *****
+	#***** The user can specify which columns correspond to         *****
+	#***** X and Y values below.                                    *****
+	#*****                                                          *****
+	#***** You need only supply three points in any order. These    *****
+	#***** points are referenced by their trace and line (colmumn   *****
+	#***** and row) numbers along with their corresponding x and y  *****
+	#***** (easting and northing) coordinates.                      *****
+	#*****                                                          *****
+	#***** This program will calculate the                          *****
+	#***** Line and Trace numbers from the supplied row and column  *****
+	#***** numbers using three control corner points.               *****
+	#*****                                                          *****
+	#********************************************************************
+	#********************************************************************
+
+	#####################################
+	#                                   #
+	#  You might want to change the     #
+	#  following parameters for a       #
+	#  particular run.                  #
+	#                                   #
+	#####################################
+
+	#**********************Start of 1st Set of Parameters*****************
+	#
+	#       (Trace1 , Line1)                     
+	#               |                           
+	#               V                           
+	#               1--------------------------------+
+	#               |                                |
+	#               |                                |  Note: points need
+	#               |                                |        not be retangular
+	#               |                                |        corner points
+	#               |                                |
+	# (Trace2, ---> 2--------------------------------3
+	#   Line2)                                       ^
+	#                                                |
+	#                                        (Trace3 , Line3)
+	#          
+	#       
+	# Defining three points of the survey in terms of traces and lines
+        # or columns and rows. Again, these can be arbitrary points.
+	# Refer to diagram above for these parameters.
+	# This sets up the three points as numbered in the diagram.
+	# The (x,y) or (easting,northing) values of these points 
+	# will need to be input below.
+
+	# Trace or column number for first point
+	Trace1 = 3516
+	# Line or row number for first point
+	Line1 = 2903
+
+	# Trace or column number for second point
+	Trace2 = 3765
+	# Line or row number for second point
+	Line2 = 3186
+
+	# Trace or column number for third point
+	Trace3 = 3788
+	# Line or row number for third point
+	Line3 = 3503
+
+	#**********************End of 1st set of Prameters********************
+
+
+	#**********************Start of 2nd Set of Parameters***************
+	#
+        #                                            / \             
+        #                                         /     \             
+        #                                      /         \            
+        #                                   /             \           
+        #                                /                 \          
+        #                             /                     \         
+        #                          /                         \
+        #                       /              (x3,y3) ---->  3
+        #                    /                               /             
+        #     (x1,y1) --->  1                             /              
+        #                    \                         /                
+        #                     \                     /                      
+        #                      \                 /                         
+        #                       \            /                             
+        #                        \       /
+        #                         \ /
+        #           (x2,y2) ---->  2     
+	#
+	#     
+	# Defining the three corner points in terms of (x,y) or
+	# (easting,northing). These points should correspond to 
+	# the three points you choose when specifying them
+	# in terms of traces and Lines (rows and columns) above.
+	# Refer to the diagram above for how the points are defined
+	# the points 1,2,3 are the same 1,2,3 points of the previous
+	# diagram.
+ 
+	x1 = 539962.11
+	y1 = 164299.31
+
+	x2 = 544481.71
+	y2 = 165632.34
+
+	x3 = 548196.65
+	y3 = 164223.94
+
+	#**********************End of 2nd set of Prameters*****************
+
+
+	#**********************Start of 3rd Set of Parameters**************
+	#
+	# This third set of parameters allow you to specify which
+	# columns of your input file contain the X and Y values and
+	# number of initial line in input file to skip
+
+	# Column in input containing X value
+	X_col = 1
+	# Column in input containing Y value
+	Y_col = 2
+	# Number of initial lines to skip
+	SkipLine = 20
+
+	#**********************End of 3rd set of Prameters******************
+
+	#**********************Start of 4th Set of Parameters***************
+	#
+	# This set allows you to enter some comments into the file to be 
+	# generated.If $printKey = 1 then there will be printout.
+	# 
+
+	PrintKey = 0
+	
+	if ( PrintKey == 1 ) {
+		printf ("# User input control points.\n")
+		printf ("#\n")				
+		printf ("# Point number   Trace    Line   X-coordinate Y-coordinate\n")
+		printf ("#      1       %6d   %6d    %10.2f   %10.2f\n", Trace1,Line1,x1,y1)
+		printf ("#      2       %6d   %6d    %10.2f   %10.2f\n", Trace2,Line2,x2,y2)
+		printf ("#      3       %6d   %6d    %10.2f   %10.2f\n", Trace3,Line3,x3,y3)
+		printf ("#\n")
+		printf ("# Along with this header two new columns will be appended\n")
+		printf ("# to your input file, corresponding to lines and traces.\n")
+		printf ("#\n")				
+	}	
+
+	#**********************End of 4th set of Prameters******************
+
+
+
+
+	
+	##################################################
+	##################################################
+	##################################################
+	####                                          ####
+	####  Should be able to leave the rest alone  ####
+	####                                          ####
+	##################################################
+	##################################################
+	##################################################
+
+
+
+
+	# Intermediate results needed for
+	# matching line and trace numbers to length
+
+	  DL12 = (Line2 - Line1)*(Line2 - Line1)
+	  DL13 = (Line3 - Line1)*(Line3 - Line1)
+	  DL23 = (Line3 - Line2)*(Line3 - Line2)
+
+	  DT12 = (Trace2 - Trace1)*(Trace2 - Trace1)
+	  DT13 = (Trace3 - Trace1)*(Trace3 - Trace1)
+	  DT23 = (Trace3 - Trace2)*(Trace3 - Trace2)
+
+	  D12 = (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)
+	  D13 = (x3-x1)*(x3-x1) + (y3-y1)*(y3-y1)
+	  D23 = (x3-x2)*(x3-x2) + (y3-y2)*(y3-y2)
+
+	  Del1 = DL12*D12 + DL13*D13 + DL23*D23
+	  Del2 = DT12*D12 + DT13*D13 + DT23*D23
+
+	  A11 = DL12*DL12 + DL13*DL13 + DL23*DL23
+	  A22 = DT12*DT12 + DT13*DT13 + DT23*DT23
+	  A12 = DL12*DT12 + DL13*DT13 + DL23*DT23
+
+	  Det = (A11*A22 - A12*A12)
+	  if ( Det == 0.0 )
+	    {
+	      print " "
+	      print " "
+              print "*******************************************************************"
+              print "*******************************************************************"
+	      print "*******************************************************************"
+	      print "*****                                                         *****"
+	      print "***** There appears to be a problem with your input points.   *****"
+	      print "***** Check your input parameters and re-run program.         *****"
+	      print "*****                                                         *****"
+	      print "*******************************************************************"
+	      print "*******************************************************************"
+              print "*******************************************************************"
+	      print " "
+	      print " "
+	      exit
+	    }
+	  
+	  S1 = ( A22*Del1 - A12*Del2 ) / Det
+	  S2 = ( A11*Del2 - A12*Del1 ) / Det
+
+#	print "Scale factor(1): "S1
+#	print "Scale factor(2): "S2
+
+}
+{
+	if ( NR <= SkipLine ) print $0
+	if ( NR > SkipLine ) {
+
+		X = $X_col
+		Y = $Y_col
+
+#	print "X-coordinate: "X
+#	print "Y-coordinate: "Y
+
+		
+		D1 = ( X - x1 )^2 +( Y - y1 )^2 
+		D2 = ( X - x2 )^2 +( Y - y2 )^2
+		D3 = ( X - x3 )^2 +( Y - y3 )^2
+
+#	print "Distance squared (1): ",D1
+#	print "Distance squared (2): ",D2
+#	print "Distance squared (3): ",D3
+
+		G1 = D1 - D2 - S1*(Line1^2 - Line2^2) - S2*(Trace1^2 - Trace2^2)
+		G2 = D2 - D3 - S1*(Line2^2 - Line3^2) - S2*(Trace2^2 - Trace3^2)
+
+		A11 = 2.0*S1*(Line2 - Line1)
+		A12 = 2.0*S2*(Trace2 - Trace1)
+		A21 = 2.0*S1*(Line3 - Line2)
+		A22 = 2.0*S2*(Trace3 - Trace2)
+
+		Det = A11*A22 - A12*A21
+
+		L = (A22*G1 - A12*G2)/Det
+		T = (A11*G2 - A21*G1)/Det
+		
+		L = int( L + 0.5 )
+		T = int( T + 0.5 )
+		
+		print $0," ",L," ",T
+	}
+}
+END{}
+

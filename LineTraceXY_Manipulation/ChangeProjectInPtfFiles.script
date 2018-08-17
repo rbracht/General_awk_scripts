@@ -1,0 +1,74 @@
+#!/usr/bin/csh
+
+########################################################################
+########################################################################
+##                                                                    ##
+##                                                                    ##
+## This shell script allows the user to change the project of all     ##
+## pointfiles within a siesworks project and write the altered files  ##
+## to a user specified directory (normally the new project). To use   ##
+## this program just type the script name and you will be prompted    ##
+## for all needed inputs                                              ##
+##                                                                    ##
+##                                                                    ##
+########################################################################
+########################################################################
+
+
+echo " "
+echo "_______________________________________________________________"
+echo " "
+echo "Input original project name (exactly)"
+set InProj = $<
+echo " "
+echo "_______________________________________________________________"
+echo " "
+echo "Desired output project name (exactly)"
+set OutProj = $<
+echo " "
+echo "_______________________________________________________________"
+echo " "
+echo "Enter Directory path to original ptf files."
+echo "(Blank defaults to current directory)"
+set InDir = $<
+
+if ( $InDir == "" ) then
+	set InDir = "."
+endif
+
+echo " "
+echo "_______________________________________________________________"
+echo " "
+echo "Enter Directory where output goes."
+echo "This program will overwrite the input if in same directory."
+echo "(Blank defaults to current directory)"
+set OutDir = $<
+
+if ( $OutDir == "" ) then
+	set OutDir = `pwd`
+endif
+
+echo " "
+echo "_______________________________________________________________"
+echo " "
+echo " "
+echo " "
+echo "Original Project Name:    "$InProj
+echo "Transformed Porject Name: "$OutProj
+echo " "
+echo "Input directory:  "$InDir
+echo "Output directory: "$OutDir
+echo " "
+echo " "
+
+cd $InDir
+#cp *.ptf $OutDir/.
+
+foreach file (*.ptf)
+
+	echo "Converting file: "$file
+
+	sed -e 's/'$InProj'/'$OutProj'/' $file >! $OutDir/$file
+
+end
+

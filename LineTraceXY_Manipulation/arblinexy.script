@@ -1,0 +1,62 @@
+#!/usr/bin/csh
+#
+#  This script uses the nawk script "ArbLine2XY_Conversion.nawk.copy"
+#  to calculate the (x,y) values from (Line,Trace) data supplied
+#  by the user. You may want to change the reference points in the 
+#  nawk file for a particular survey. The method is explained within
+#  the nawk script itself
+
+echo " "		
+echo -n " Enter the name of the file containing your line and trace numbers. >>"
+set infile = $<
+
+echo " "
+echo -n " Enter the name of where you wish to place output. >>"
+set outfile = $<
+echo " " 
+
+echo " "
+echo -n " Enter a unique line identifier (Default: ArbLineID). >>"
+set ident = $<
+echo " " 
+
+if (-e "tempzzxxyy.nawk" ) rm tempzzxxyy.nawk
+
+if (ident == "" ) then
+	cp ArbLine2XY_Conversion.nawk.copy tempzzxxyy.nawk
+else
+	sed 's/ArbLineID/'$ident'/' ArbLine2XY_Conversion.nawk.copy > tempzzxxyy.nawk
+
+if (-e $infile ) then
+	if ( $outfile != "" ) then
+		if ( $outfile == "scr" ) then
+			nawk -f tempzzxxyy.nawk < $infile | more
+			rm -f tempzzxxyy.nawk
+			exit 1
+		else
+			nawk -f tempzzxxyy.nawk < $infile > $outfile
+			rm -f tempzzxxyy.nawk
+			echo " "		
+			echo " Check $outfile for your results. "		
+			echo " "
+			exit 1
+		endif
+	else
+		echo " "
+		echo " You have failed to specify an output file."
+		echo " If you wish to print to the screen"
+		echo " specify "scr" for the output file."
+		echo " "
+		exit 1
+	endif
+else
+	echo " "		
+	echo " You have not specified an input file."
+	echo " "
+endif
+
+end
+
+
+
+	
